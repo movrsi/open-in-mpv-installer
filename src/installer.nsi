@@ -53,8 +53,6 @@ SectionIn RO
     ; TODO refactor for a more traditional installer.
     ; Discussed with @Tatsh.
     SetOutPath "$MPV_TEMP_LOCATION"
-    File "$FF_JSON_FILE"
-    File "$CHROME_JSON_FILE"
     File "$REQUIREMENTS"
 
     SetOutPath "$MPV_LOCATION\open-in-mpv"
@@ -72,7 +70,7 @@ SectionEnd
 Section "Firefox" SEC_FIREFOX
 SectionIn 1
     ; Create the required JSON file for Mozilla Firefox.
-    !insertmacro ReplaceJSON BROWSER_FIREFOX
+    !insertmacro WriteFirefoxJSON
     ; Create the required registry entries for Mozilla Firefox.
     !insertmacro InsertRegkey BROWSER_FIREFOX
 SectionEnd
@@ -80,7 +78,7 @@ SectionEnd
 Section /o "Chromium" SEC_CHROMIUM
 SectionIn 2
     ; Create the required JSON file for Chromium
-    !insertmacro ReplaceJSON BROWSER_CHROME
+    !insertmacro WriteChromeJSON
     ; Create the required registry entries for Chromium.
     !insertmacro InsertRegkey BROWSER_CHROME
 SectionEnd
