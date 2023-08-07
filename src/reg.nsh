@@ -31,13 +31,15 @@
     IntOp $EBX, $EAX & 1
 
     ${If} $EBX == 1
-        WriteRegStr HKLM ${REGISTRY_KEY_FIREFOX} ${REGISTRY_VALUE}
+        WriteRegStr HKLM "${REGISTRY_KEY_FIREFOX}" "${MANIFEST_JSON}"
     ${Else}
-        WriteRegStr HKLM ${REGISTRY_KEY_CHROME} ${REGISTRY_VALUE}
+        WriteRegStr HKLM "${REGISTRY_KEY_CHROME}" "${MANIFEST_JSON}"
     ${EndIf}
 !macroend
 
 !macro DeleteRegKeyIfExists EAX
+    SetRegView 64
+    ClearErrors
     ReadRegStr $R0 HKLM $EAX
     StrLen $0 $R0
 
@@ -48,28 +50,28 @@
 
 !macro ExectutePythonIfExists EAX EBX
     SetRegView 64
+    ClearErrors
     ReadRegStr $R0 $EAX $EBX
     StrLen $0 $R0
 
     ${If} $0 != 0
-        ExecWait '"$R0\python.exe" -m pip install -r requirements.txt'
+        ExecWait '"$R0\python.exe" -m pip install -r pywin32'
         !insertmacro _FinishMessage "Successfully obtained win32 Python dependency!"
     ${EndIf}
 !macroend
 
 !macro DeleteRegKeys EAX
-    SetRegView 64
     IntOp $EBX, $EAX & 1
 
     ${If} $EBX == 1
-        DeleteRegKeyIfExists $REGISTRY_KEY_FIREFOX
+        DeleteRegKeyIfExists "${REGISTRY_KEY_FIREFOX}"
     ${Else}
-        DeleteRegKeyIfExists $REGISTRY_KEY_CHROME
+        DeleteRegKeyIfExists "${REGISTRY_KEY_CHROME}"
     ${EndIf}
 !macroend
 
 !macro PythonDependencies
-    ExectutePythonIfExists HKLM $PYTHON_REGISTRY_64
-    ExectutePythonIfExists HKCU $PYTHON_REGISTRY_64
-    ExectutePythonIfExists HKLM $PYTHON_REGISTRY_32
+    ExectutePythonIfExists HKLM "${PYTHON_REGISTRY_64}"
+    ExectutePythonIfExists HKCU "${PYTHON_REGISTRY_64}"
+    ExectutePythonIfExists HKLM "${PYTHON_REGISTRY_32}"
 !macroend

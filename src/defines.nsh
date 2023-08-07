@@ -34,9 +34,11 @@
 !define FFMPEG_EXECUTABLE "ffmpeg.exe"
 !define YOUTUBEDL_EXECUTABLE "youtube-dl.exe"
 !define MPV_EXECTUABLE "mpv.exe"
-!define FF_JSON_FILE "sh.tat.firefox.open-in-mpv.json.in"
-!define CHROME_JSON_FILE "sh.tat.open-in-mpv.json.in"
-!define REQUIREMENTS "requirements.txt"
+!define OPEN_IN_MPV_SCRIPT "open-in-mpv.py"
+
+; Batch scripts
+!define MPV_INSTALLER "mpv-install.bat"
+!define MPV_UNINSTALLER "mpv-uninstall.bat"
 
 ; Installer options.
 !define INSTALLER_AUTHOR "Copyright 2023 Tatsh - tat.sh"
@@ -45,9 +47,16 @@
 !define INSTALLER_VERSION "0.0.1"
 
 ; open-in-mpv specific.
-!define MPV_LOCATION "$PROGRAMFILES64"
-!define OPEN_IN_MPV_FF_JSON "$TEMP\open-in-mpv\sh.tat.firefox.open-in-mpv.json.in"
-!define OPEN_IN_MPV_CHROME_JSON "$TEMP\open-in-mpv\sh.tat.open-in-mpv.json.in"
+!define MANIFEST_JSON "$INSTDIR\sh.tat.open-in-mpv.json"
+!define MANIFEST_JSON_END "}"
+!define MANIFEST_JSON_START "{\n"
+!define MANIFEST_FIREFOX_EXTENSION "    $\"allowed_extensions$\": [$\"{43e6f3ef-84a0-55f4-b9dd-d879106a24a9}$\"],\n"
+!define MANIFEST_CHROME_EXTENSION "    $\"allowed_origins$\": [$\"chrome-extension://ggijpepdpiehgbiknmfpfbhcalffjlbj/$\"],\n"
+!define MANIFEST_NAME "    $\"name$\": $\"sh.tat.open-in-mpv$\",\n"
+!define MANIFEST_DESCRIPTION "    $\"description$\": $\"Open a video using mpv$\",\n"
+!define MANIFEST_PATH "    $\"path$\": $\"$INSTDIR\open-in-mpv.py$\",\n"
+!define MANIFEST_TYPE "    $\"type$\": $\"stdio$\"\n"
+!define MPV_LOCATION "$PROGRAMFILES64\open-in-mpv"
 !define MPV_TEMP_LOCATION "$TEMP\open-in-mpv"
 
 ; Registry.
@@ -55,4 +64,13 @@
 !define PYTHON_REGISTRY_32 "SOFTWARE\Wow6432Node\Python\PythonCore\versionnumber\InstallPath"
 !define REGISTRY_KEY_CHROME "Software\Google\Chrome\NativeMessagingHosts\sh.tat.open-in-mpv"
 !define REGISTRY_KEY_FIREFOX "SOFTWARE\Mozilla\NativeMessagingHosts\sh.tat.open-in-mpv"
-!define REGISTRY_VALUE "$INSTDIR\sh.tat.open-in-mpv.json"
+
+; Selection text
+!define BROWSER_SELECTION_TEXT "/CUSTOMSTRING=Select the browser that open-in-mpv will be used in"
+!define BROWSER_SELECTION_FIREFOX "Mozilla Firefox"
+!define BROWSER_SELECTION_CHOME "Chromium Based"
+
+; Shortcuts
+!define SHORTCUT_MPV_DESKTOP "$DESKTOP\mpv Media Player.lnk"
+!define SHORTCUT_MPV_START_MENU "$SMPROGRAMS\mpv Media Player.lnk"
+!define SHORTCUT_MPV_PATH "$INSTDIR\mpv.exe"

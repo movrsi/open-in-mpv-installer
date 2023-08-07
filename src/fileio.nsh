@@ -21,6 +21,7 @@
 ; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ; SOFTWARE.
 
+!include LogicLib.nsh
 !include "defines.nsh"
 
 ; Cleanup routine for the installer.
@@ -40,8 +41,8 @@
 ; - A shortcut to mpv on the users desktop.
 ; - A shortcut to mpv in the users start menu.
 !macro CreateShortcuts
-    CreateShortCut "$DESKTOP\mpv Media Player.lnk" "$INSTDIR\mpv.exe"
-    CreateShortCut "$SMPROGRAMS\mpv Media Player.lnk" "$INSTDIR\mpv.exe"
+    CreateShortCut "${SHORTCUT_MPV_DESKTOP}" "${SHORTCUT_MPV_PATH}"
+    CreateShortCut "${SHORTCUT_MPV_START_MENU}" "${SHORTCUT_MPV_PATH}"
 !macroend
 
 ; Delete the created shortcuts that open-in-mpv created during install.
@@ -50,32 +51,37 @@
 ; - Desktop
 ; - Startmenu
 !macro DeleteShortcuts
-    Delete "$DESKTOP\mpv Media Player.lnk"
-    Delete "$SMPROGRAMS\mpv Media Player.lnk"
+    Delete "${SHORTCUT_MPV_DESKTOP}"
+    Delete "${SHORTCUT_MPV_START_MENU}"
 !macroend
 
-; Write the Mozilla Firefox JSON.
-!macro WriteFirefoxJSON
-    FileOpen $0 "$INSTDIR\sh.tat.open-in-mpv.json" w ;open a file with write mode.
-    FileWrite $0 "{\n"
-    FileWrite $0 "    $\"allowed_extensions$\": [$\"{43e6f3ef-84a0-55f4-b9dd-d879106a24a9}$\"],\n"
-    FileWrite $0 "    $\"description$\": $\"Open a video using mpv$\",\n"
-    FileWrite $0 "    $\"name$\": $\"sh.tat.open-in-mpv$\",\n"
-    FileWrite $0 "    $\"path$\": $\"$INSTDIR\open-in-mpv.py$\",\n"
-    FileWrite $0 "    $\"type$\": $\"stdio$\"\n"
-    FileWrite $0 "}\n"
+; Write the Mozilla Firefox or Google Chrome manifest JSON.
+;
+; Param: EAX 0 if chrome, 1 if firefox.
+!macro WriteManifestJSON EAX
+    IntOp $EBX, $EAX & 1
+
+    FileOpen $0 "${MANIFEST_JSON}" w ;open a file with write mode.
+    FileWrite $0 "${MANIFEST_JSON_START}"
+
+    ${If $EBX == 1}
+        FileWrite $0 "${MANIFEST_FIREFOX_EXTENSION}"
+    ${Else}
+        FileWrite $0 "${MANIFEST_CHROME_EXTENSION}"
+    ${EndIf}
+
+    FileWrite $0 "${MANIFEST_DESCRIPTION}"
+    FileWrite $0 "${MANIFEST_NAME}"
+    FileWrite $0 "${MANIFEST_PATH}"
+    FileWrite $0 "${MANIFEST_TYPE}"
+    FileWrite $0 "${MANIFEST_JSON_END}"
     FileClose $0 ;close the file handle.
 !macroend
 
-; Write the Chrome JSON.
-!macro WriteChromeJSON
-    FileOpen $0 "$INSTDIR\sh.tat.open-in-mpv.json" w ;open a file with write mode.
-    FileWrite $0 "{\n"
-    FileWrite $0 "  $\"allowed_origins$\": [$\"chrome-extension://ggijpepdpiehgbiknmfpfbhcalffjlbj/$\"],\n"
-    FileWrite $0 "    $\"description$\": $\"Open a video using mpv$\",\n"
-    FileWrite $0 "    $\"name$\": $\"sh.tat.open-in-mpv$\",\n"
-    FileWrite $0 "    $\"path$\": $\"$INSTDIR\open-in-mpv.py$\",\n"
-    FileWrite $0 "    $\"type$\": $\"stdio$\"\n"
-    FileWrite $0 "}\n"
-    FileClose $0 ;close the file handle.
+!macro ExecuteMpvInstaller
+    ExecWait '"$SYSDIR\cmd.exe" /C if 1==1 "$MPV_TEMP_LOCATION\mpv-install.bat"'
+!macroend
+
+!macro ExecuteMpvUninstaller
+    ExecWait '"$SYSDIR\cmd.exe" /C if 1==1 "$MPV_LOCATION\mpv-uninstall.bat"'
 !macroend
