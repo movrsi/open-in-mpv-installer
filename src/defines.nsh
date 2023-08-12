@@ -39,6 +39,7 @@
 ; Batch scripts
 !define MPV_INSTALLER "mpv-install.bat"
 !define MPV_UNINSTALLER "mpv-uninstall.bat"
+!define MPV_UPDATER "updater.ps1"
 
 ; Installer options.
 !define INSTALLER_AUTHOR "Copyright 2023 Tatsh - tat.sh"

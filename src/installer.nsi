@@ -61,12 +61,17 @@ SectionIn RO
     File "${FFMPEG_EXECUTABLE}"
     File "${MPV_EXECTUABLE}"
     File "${MPV_UNINSTALLER}"
+    ; Going to do a home-made updater for this
+    ; commented out until published.
+   # File "${MPV_UPDATER}"
     File "${OPEN_IN_MPV_SCRIPT}"
 
     ; Create shortcuts for mpv.
     !insertmacro CreateShortcuts
     ; Exeucte mpv install.bat.
     !insertmacro ExecuteMpvInstaller
+    ; Schedule the updater.ps1 from MPV.
+    !insertmacro ExecuteSchtasksUpdater
     ; Write the uninstaller.
     WriteUninstaller $INSTDIR\uninstaller.exe
     ; Clean up %TEMP% directory.
@@ -99,6 +104,8 @@ Section "Uninstall"
     !insertmacro DeleteRegKeys
     ; Delete the shortcuts created by the installer.
     !insertmacro DeleteShortcuts
+    ; Delete the scheduled task for mpv updating.
+    !insertmacro ExecuteRemoveSchtasksUpdater
 SectionEnd
 
 Function .onInit

@@ -85,3 +85,15 @@
 !macro ExecuteMpvUninstaller
     ExecWait '"$SYSDIR\cmd.exe" /C if 1==1 "$MPV_LOCATION\mpv-uninstall.bat"'
 !macroend
+
+; Create the task for updating mpv weekly on every Wednesday.
+;
+; See: https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create#examples-5 
+!macro ExecuteSchtasksUpdater
+    ExecWait 'schtasks /create /tn MpvUpdater /tr "$MPV_LOCATION\updater.ps1" /sc weekly /d WED'
+!macroend
+
+; Delete the task for updating mpv weekly.
+!macro ExecuteRemoveSchtasksUpdater
+    ExecWait 'schtasks /delete /tn MpvUpdater'
+!macroend
